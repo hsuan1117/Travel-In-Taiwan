@@ -49,7 +49,7 @@
 					若要繼續執行Tag搜尋
 					請勿變更 &type=tag,謝謝
 				</div>
-				共有{{searchResult.total}}筆資料結果
+				共有{{searchResult.total}}筆資料結果 大約有{{Math.floor(Number(searchResult.total)/Number(searchResult.per_page))+1}}頁
 				<br>
 				<hr>
 			</div>
@@ -92,6 +92,8 @@
 			<center>
 				<div v-if="searchResult.page!=1" class="btn btn-success" id="btn-prevPage" @click="nextPage(searchResult.page-1)">上一頁({{searchResult.page-1}})</div>
 				<div class="btn btn-success" id="btn-nextPage" @click="nextPage(searchResult.page+1)">下一頁({{searchResult.page+1}})</div>
+				<br>
+				(Total: {{Math.floor(Number(searchResult.total)/Number(searchResult.per_page))+1}})
 			</center>
 			<br>
 		</div>
