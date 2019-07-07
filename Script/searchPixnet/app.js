@@ -68,7 +68,7 @@ var searchApp = new Vue({
 		nextPage:function(page){
 			$("#btn-nextPage").addClass("disabled")
 			$("#btn-prevPage").addClass("disabled")
-			$("#btn-nextPage").after("<br><br><span class='alert alert-info' id='temp-wait-plz'>請稍後....</span><br>")
+			$("#btn-nextPage").after("<div id='temp-wait-plz'><br><span class='alert alert-info' >請稍後....</span><br></div>")
 			location.href="#temp-wait-plz"
 			axios.get('https://emma.pixnet.cc/blog/articles/search?format=json&per_page=28&key=' + searchData+'&page='+page)
 				.then(function(response) {
