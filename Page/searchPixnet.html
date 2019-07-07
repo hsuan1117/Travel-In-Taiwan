@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1" />
+		<title>台灣旅遊助手 | Pixnet搜尋</title>
+
+		<!-- 載入使用的程式碼 -->
+		<script src="../Script/public/vue/vue.js"></script>
+		<script src="../Script/public/jquery.min.js"></script>
+		<script src="../Script/public/popper.min.js"></script>
+		<script src="../Script/public/bootstrap/js/bootstrap.min.js"></script>
+		<script src="../Script/public/vue/plugin/axios.js"></script>
+		<!--<script src="../Script/public/vue/plugin/vue-router.min.js"></script>-->
+		<script src="ajax/nav.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.0/jquery.contextMenu.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.0/jquery.ui.position.min.js"></script>
+
+		<!-- 載入使用的CSS -->
+		<link href="../Style/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../Style/searchPixnet/searchPixnet.css" rel="stylesheet" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.8.0/jquery.contextMenu.min.css" />
+	</head>
+	<body>
+		<div id="NavApp">
+			<!-- {{path}}searchPixnet.html -->
+			<Travel-Nav search-pixnet="searchPixnet.html" now="searchPixnet"></Travel-Nav>
+		</div>
+		<div id="searchApp" class="container-fluid h-100 " style="padding-top: 50px;">
+			<br>
+			<div v-if="loading" id="fill_loading" class="d-flex flex-column justify-content-center align-items-center">
+				Loading...<br>
+				精彩內容即將呈現
+				<br><br>
+				<div class="balls">
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+			<div style="color: #777;">
+				<form class="form-inline my-2 my-lg-0 w-100 input-group" action="searchPixnet.html">
+					<input name="q" class="form-control /*mr-sm-2*/ " type="search" placeholder="搜尋" :value="searchData">
+					<div class="input-group-append">
+						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜尋</button>
+					</div>
+				</form>
+				<div v-if="searchData.indexOf('&type=tag')>0" class="alert alert-warning">
+					若要繼續執行Tag搜尋
+					請勿變更 &type=tag,謝謝
+				</div>
+				共有{{searchResult.total}}筆資料結果
+				<br>
+				<hr>
+			</div>
+			<div class="row">
+				<template v-for="item in searchResult.articles">
+					<div class="col-3 col-lg-3 col-sm-6 col-md-4">
+						<div class="card" style="width: 18rem;" :data-img-src="item.thumb" :data-title="item.title | removeInappropriate"
+						 :data-link="item.link">
+
+							<!-- 非zoomcrop -->
+							<img v-if="item.thumb.indexOf('zoomcrop')==-1" class="card-img-top" :src="item.thumb">
+
+							<!-- Zoomcrop 且格式為 W*H.<imageExtension> -->
+							<center class="card-img-top" v-if="item.thumb.indexOf('90x90')>0&&item.thumb.indexOf('zoomcrop')>0">
+								<img style="width:90px !important;height:90px !important;" :src="item.thumb">
+							</center>
+
+							<!-- Zoomcrop 且格式為 height=&width= -->
+							<center class="card-img-top" v-if="item.thumb.indexOf('90x90')==-1&&item.thumb.indexOf('zoomcrop')>0">
+								<img :style="item.thumb | parseStyleHW" :src="item.thumb">
+							</center>
+
+							<div class="card-body">
+								<h5 class="card-title">{{item.title | removeInappropriate}}</h5>
+								<a :href="item.link" class="btn btn-info form-control" target="_blank">立刻看文章</a>
+								<br><br>
+								<div class="alert alert-success">
+									作者&#128515;: {{item.user.display_name}} <img :src="item.user.cavatar" style="width:30px;height:30px;border-radius:50%"><br>
+									時間&#128347;: <span style="font-size: 10px;">{{item.last_modified | formatUnixTime}}</span>
+									<template v-for="tag in item.tags">
+										<span @click="searchTag(tag.tag)" class="badge badge-pill badge-primary" style="cursor: pointer;">{{tag.tag}}</span>&nbsp;
+									</template>
+								</div>
+							</div>
+						</div>
+						<br>
+					</div>
+				</template>
+			</div>
+			<center>
+				<div v-if="searchResult.page!=1" class="btn btn-success" id="btn-prevPage" @click="nextPage(searchResult.page-1)">上一頁({{searchResult.page-1}})</div>
+				<div class="btn btn-success" id="btn-nextPage" @click="nextPage(searchResult.page+1)">下一頁({{searchResult.page+1}})</div>
+			</center>
+			<br>
+		</div>
+	</body>
+	<!-- to use modal , so I add it at bottom of page -->
+	<div class="modal fade" id="TemplatedModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">{{title}}</h5>
+					<button type="button" class="close" data-dismiss="modal">
+						<span>&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					{{content}}
+				</div>
+				<div class="modal-footer" v-html="buttons"></div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- At the end -->
+	<script src="../Script/searchPixnet/app.js"></script>
+</html>

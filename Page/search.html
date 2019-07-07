@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1" />
+		<title>台灣旅遊助手 | 搜尋</title>
+
+		<!-- 載入使用的程式碼 -->
+		<script src="../Script/public/vue/vue.js"></script>
+		<script src="../Script/public/jquery.min.js"></script>
+		<script src="../Script/public/popper.min.js"></script>
+		<script src="../Script/public/bootstrap/js/bootstrap.min.js"></script>
+		<script src="../Script/public/vue/plugin/axios.js"></script>
+		<script src="ajax/nav.js"></script>
+
+		<!-- 載入使用的CSS -->
+		<link href="../Style/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../Style/search/search.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="NavApp">
+			<!-- {{path}}searchPixnet.html -->
+			<Travel-Nav search-pixnet="searchPixnet.html"></Travel-Nav>
+		</div>
+
+		<div id="Search" class="container-fluid h-100 d-flex flex-column justify-content-center align-items-center" style="padding-top: 55px;">
+			<br>
+			<input type="text" class="form-control p-3" v-model="searchKeyword" />
+
+			<div class="badge badge-pill badge-primary m-2" @click="isTagSearch=isTagSearch?false:true">
+				<br>
+				<input id="isTagSearch_input" type="checkbox" v-model="isTagSearch" class="bg-success" />
+				<label for="isTagSearch_input" @click="isTagSearch=isTagSearch?false:true">標籤查詢</label><br>
+			</div>
+
+			<div class="row">
+				<div v-if="!isListening" style="height:48px;width:48px;display:block;background-image: url(https://www.gstatic.com/images/branding/googlemic/2x/googlemic_color_24dp.png);"
+				 onclick="start()"></div>
+				<button class="btn btn-success" @click="search()">搜尋</button>
+			</div>
+
+			<div v-if="isListening">
+				<br><br>
+				<center>
+				<div class="alert alert-info">
+					請開始說話
+					<div class="btn btn-success" onclick="stop()">
+						停止
+					</div>
+				</div><br>
+				<div class="balls">
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+				</center>
+			</div>
+		</div>
+		<script src="../Script/search/app.js"></script>
+	</body>
+</html>

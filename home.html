@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1" />
+		<title>台灣旅遊助手</title>
+
+		<!-- 載入使用的程式碼 -->
+		<script src="Script/public/vue/vue.js"></script>
+		<script src="Script/public/jquery.min.js"></script>
+		<script src="Script/public/popper.min.js"></script>
+		<script src="Script/public/bootstrap/js/bootstrap.min.js"></script>
+		<script src="Script/public/vue/plugin/axios.js"></script>
+		<script src="Script/public/vue/plugin/vue-router.min.js"></script>
+		<script src="Page/ajax/nav.js"></script>
+		<script src="Script/public/jquery-ui/jquery-ui.min.js"></script>
+
+		<!-- 載入使用的CSS -->
+		<link href="Style/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="Style/home/home.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div id="NavApp">
+			<!-- {{path}}searchPixnet.html -->
+			<Travel-Nav search-pixnet="Page/searchPixnet.html" now="home"></Travel-Nav>
+		</div>
+		<div class="container-fluid h-100 " style="padding-top: 50px;">
+			<div class="row">
+				<div class="col-9 border border-light">
+					<!-- 左欄位 --><br>
+					<!-- start 輪播 -->
+					<div id="Carousel" class="carousel slide" data-ride="carousel">
+						<ol class="carousel-indicators">
+							<li data-target="#Carousel" data-slide-to="0" class="active"></li>
+							<li data-target="#Carousel" data-slide-to="1"></li>
+							<li data-target="#Carousel" data-slide-to="2"></li>
+						</ol>
+						<div class="carousel-inner">
+							<div class="carousel-item active">
+								<img src="https://unsplash.com/photos/JMB3Efb8yoQ/download?force=true" class="d-block w-100" alt="...">
+								<div class="carousel-content" style="color: white !important;background-color: black;">
+									<p>Photo by Remi Yuan on Unsplash</p>
+								</div>
+							</div>
+							<div class="carousel-item">
+								<img src="http://code.z01.com/img/2016instbg_02.jpg" class="d-block w-100" alt="...">
+							</div>
+							<div class="carousel-item">
+								<img src="http://code.z01.com/img/2016instbg_03.jpg" class="d-block w-100" alt="...">
+							</div>
+						</div>
+						<a class="carousel-control-prev" href="#Carousel" role="button" data-slide="prev">
+							<span class="carousel-control-prev-icon"></span>
+						</a>
+						<a class="carousel-control-next" href="#Carousel" role="button" data-slide="next">
+							<span class="carousel-control-next-icon"></span>
+						</a>
+					</div>
+					<!-- end 輪播 -->
+					<br>
+					<!-- start 功能列表 -->
+					<div id="feature_cards">
+						<div class="row">
+							<template v-for="(item, index) in features">
+								<div class="col-4">
+									<div class="card" style="width: 18rem;">
+										<div class="card-img-top">
+											<div v-html="item.card_head"></div>
+										</div>
+										<div class="card-body">
+											<h5 class="card-title">{{item.card_title}}</h5>
+											<pre class="card-text autoLine">{{item.card_content}}</pre>
+											<div v-html="item.card_others"></div>
+										</div>
+									</div>
+									<br>
+								</div>
+							</template>
+							<br>
+						</div>
+					</div>
+					<!-- end 功能列表 -->
+				</div>
+				<div class="col-3 border border-light">
+					<!-- 右欄位 --><br>
+					<!--<form class="form-inline my-2 my-lg-0" action="Page/searchPixnet.html">
+						<input name="q" class="form-control mr-sm-2" type="search" placeholder="搜尋" aria-label="Search">
+						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜尋</button>
+					</form>-->
+					<br>
+					<form class="form-inline my-2 my-lg-0" action="Page/searchPixnet.html">
+						<input class="form-control mr-sm-2" name="q" id="autocomplete_input" type="search" placeholder="輸入自動完成">
+						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜尋</button>
+						<div id="autocomplete_result"></div>
+					</form>
+					<script>
+						var autocompleteCache = {}; //Keyword()
+						$(function() {
+							Keyword("autocomplete_input")
+						});
+
+						function Keyword(ID) {
+							/// <summary>
+							/// 關鍵字自動完成
+							/// </summary>
+							/// <param name="ID">ID</param>
+							$("#" + ID).autocomplete({
+								minLength: 1,
+								source: function(request, response) {
+									var term = request.term;
+									if (term in autocompleteCache) {
+										response(autocompleteCache[term]);
+										return;
+									}
+									$.ajax({
+										url: "https://emma.pixnet.cc/explorer/autocomplete?format=json",
+										dataType: "json",
+										data: {
+											"key": request.term,
+										},
+										timeout: 180000,
+										global: false,
+										success: function(data) {
+											var ShowData = [];
+											data.data.forEach(function(item){
+												ShowData.push({
+													label: item,
+													value: item
+												});
+											})
+											autocompleteCache[term] = ShowData;
+											response(ShowData);
+										},
+										complete: function() {
+											$("#" + ID).removeClass("ui-autocomplete-loading");
+										}
+									});
+								},
+								autoFocus: false,
+								focus: function(event, ui) {
+									$("#" + ID).val(ui.item.label);
+									return false;
+								},
+								select: function(event, ui) {
+									$("#" + ID).val(ui.item.label);
+									return false;
+								},
+								open: function() {
+									$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+								},
+								close: function() {
+									$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+								}
+							}).data("ui-autocomplete")._renderItem = function(ul, item) {
+								return $("<li>").append(
+									$("<div></div>")
+										.addClass("text text-primary")
+										.css("cursor","pointer")
+										.text(item.label)
+								).appendTo(ul);
+							};
+						}
+					</script>
+				</div>
+			</div>
+		</div>
+		<!--
+		<div id="Header">Header 欄位</div>
+		<div id="Nav">Nav 欄位</div>
+
+		<div id="Sidebar">Sidebar</div>
+		<div id="Body">Body 欄位</div>
+		<div id="Footer">Footer 欄位</div>-->
+
+		<!-- 在最後載入以避免找不到元素 -->
+		<script src="Script/home/app.js"></script>
+	</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1" />
+		<title>台灣旅遊助手 | 中央氣象局</title>
+
+		<!-- 載入使用的程式碼 -->
+		<script src="../Script/public/vue/vue.js"></script>
+		<script src="../Script/public/jquery.min.js"></script>
+		<script src="../Script/public/popper.min.js"></script>
+		<script src="../Script/public/bootstrap/js/bootstrap.min.js"></script>
+		<script src="../Script/public/vue/plugin/axios.js"></script>
+		<script src="ajax/nav.js"></script>
+		<script src="../Script/public/leaflet/leaflet.js"></script>
+
+		<!-- 載入使用的CSS -->
+		<link href="../Style/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../Style/cwb/cwb.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="../Script/public/leaflet/leaflet.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="NavApp">
+			<!-- {{path}}searchPixnet.html -->
+			<Travel-Nav search-pixnet="searchPixnet.html"></Travel-Nav>
+		</div>
+		<div id="CwbApp" class="container-fluid h-100 " style="padding-top: 50px;">
+			<br>
+			<div v-if="loading" id="fill_loading" class="d-flex flex-column justify-content-center align-items-center">
+				Loading...<br>
+				精彩內容即將呈現
+				<br><br>
+				<div class="loading_CSSFX"></div>
+			</div>
+			<center>
+				<div id="chooseRegionMap"></div>
+			</center>
+			<br>
+			<template v-for="item in cwbAllData">
+				<h5 class="alert alert-secondary">{{item.datasetDescription}}</h5>
+				<div class="row">
+					<template v-for="cwbData in item.location">
+						<div class="col-3 col-lg-3 col-sm-6 col-md-4">
+							<div class="card " style="width: 18rem;">
+								<div class="card-body" :id="item.datasetDescription+'--'+cwbData.locationName.substring(0,cwbData.locationName.length-1)" >
+									<h5 class="alert alert-primary text-center display-4" style="font-family: 'Noto Sans TC', sans-serif;" >{{cwbData.locationName}}</h5>
+									<template v-for="(element,i) in cwbData.weatherElement">
+										<br v-if="i != 0">
+										<div class="alert alert-success" data-toggle="collapse" :data-target="'#'+cwbData.locationName+item.datasetDescription+String(i)+element.elementName">
+											<div class="row">
+												{{element.elementName | toReadable}}
+												<i class="material-icons" style="position: absolute;right: 5px;">keyboard_arrow_down</i>
+											</div>
+										</div>
+										<div class="collapse" :id="cwbData.locationName+item.datasetDescription+String(i)+element.elementName">
+											<template v-for="data in element.time">
+												<div>
+													&#128347;:
+													<span style="font-size: 10px;">
+														{{([data.startTime,data.endTime]) | formatTimeRange}}
+													</span>
+												</div>
+												<div v-if="data.parameter.parameterName && data.parameter.parameterValue" class="text text-info bg-light text-center p-3">
+													{{data.parameter.parameterName+"-"+data.parameter.parameterValue}}
+												</div>
+												<div v-else-if="data.parameter.parameterName && data.parameter.parameterUnit" class="text text-info bg-light text-center p-3">
+													{{data.parameter.parameterName}} {{data.parameter.parameterUnit | parseUnit}}
+												</div>
+												<div v-else-if="data.parameter.parameterName" class="text text-info bg-light text-center p-3">
+													{{data.parameter.parameterName}}
+												</div>
+
+											</template>
+										</div>
+									</template>
+								</div>
+							</div>
+							<br>
+						</div>
+					</template>
+					<br>
+				</div>
+			</template>
+			<div class="fixed-bottom text-right">
+				<i class="material-icons">keyboard_arrow_up</i>
+			</div>
+			<div class="text-right">
+				資料來源:
+				<img src="https://www.cwb.gov.tw/V7/images/icon/cwbLogo04.png">
+			</div>
+
+		</div>
+		<script src="../Script/cwb/app.js"></script>
+	</body>
+</html>
