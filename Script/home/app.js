@@ -27,3 +27,12 @@ var featureCards = new Vue({
 var nav = new Vue({
 	el: "#NavApp"
 })
+var carouselApp = new Vue({
+	el: '#Carousel',
+	data: {
+		carouselItems: [
+			"https://www.google.com.tw/logos/doodles/2019/2019-womens-world-cup-day-25-4819909247238144-law.gif  ==defaultActive==",
+			"https://hs.nnkieh.tn.edu.tw/uploads/ugm_college/system/d0201_1.jpg"
+		]
+	}
+})
