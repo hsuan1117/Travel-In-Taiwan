@@ -28,7 +28,7 @@
 		template: html,
 		methods: {
 			goHome: function() {
-				window.location.href = this.$attrs.home || "/"
+				window.location.href = this.$attrs.home || "/Travel-In-Taiwan"
 			},
 			goAbout: function() {
 				window.location.href = (
