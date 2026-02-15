@@ -10,7 +10,7 @@ var featureCards = new Vue({
 			"card_head": "",
 			"card_title": "旅遊諮詢",
 			"card_content": "本站提供您全台各地著名景點與導覽介紹",
-			"card_others": ""
+			"card_others": "<a href='Page/attractions.html' class='card-link'>查看景點</a>"
 		}, {
 			"card_head": "",
 			"card_title": "即時訊息",

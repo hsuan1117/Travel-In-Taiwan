@@ -5,14 +5,12 @@ var search = new Vue({
 	el: "#Search",
 	data: {
 		searchKeyword: "",
-		isTagSearch: false,
 		isListening:false
 	},
 	methods: {
 		search: function() {
 			var keyword = this.searchKeyword
-			//location.href=
-			window.open("searchPixnet.html?q=" + keyword + (this.isTagSearch ? "&tag=yes" : ""), "_top")
+			window.open("attractions.html?q=" + keyword, "_top")
 		}
 	}
 })

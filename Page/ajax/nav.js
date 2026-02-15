@@ -16,6 +16,10 @@
 						v-on:click="goAbout()"
 						v-if="this.$attrs.now != 'about'"
 					>About me</a>
+					<a 	class="nav-item nav-link" href="#" 
+						v-on:click="goAttractions()"
+						v-if="this.$attrs.now != 'attractions'"
+					>景點搜尋</a>
 					<form class="form-inline my-2 my-lg-0" :action="this.$attrs['search-pixnet']">
 						<input name="q" class="form-control mr-sm-2" type="search" placeholder="搜尋" aria-label="Search">
 						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜尋</button>
@@ -37,6 +41,15 @@
 					"about.html"
 					://not in /Page
 					this.$attrs['search-pixnet'].split("/")[this.$attrs['search-pixnet'].split("/").length-2]+"/about.html"
+				)
+			},
+			goAttractions: function() {
+				window.location.href = (
+					this.$attrs['search-pixnet'].split("/").length==1
+					?//in /Page 
+					"attractions.html"
+					://not in /Page
+					this.$attrs['search-pixnet'].split("/")[this.$attrs['search-pixnet'].split("/").length-2]+"/attractions.html"
 				)
 			}
 		}

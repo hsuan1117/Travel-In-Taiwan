@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=1" />
+		<title>台灣旅遊助手 | 景點搜尋</title>
+
+		<!-- 載入使用的程式碼 -->
+		<script src="../Script/public/vue/vue.js"></script>
+		<script src="../Script/public/jquery.min.js"></script>
+		<script src="../Script/public/popper.min.js"></script>
+		<script src="../Script/public/bootstrap/js/bootstrap.min.js"></script>
+		<script src="../Script/public/vue/plugin/axios.js"></script>
+		<script src="../Script/public/travel-api.js"></script>
+		<script src="ajax/nav.js"></script>
+
+		<!-- 載入使用的CSS -->
+		<link href="../Style/public/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="../Style/searchPixnet/searchPixnet.css" rel="stylesheet" />
+	</head>
+	<body>
+		<div id="NavApp">
+			<Travel-Nav search-pixnet="attractions.html" now="attractions"></Travel-Nav>
+		</div>
+		<div id="attractionsApp" class="container-fluid h-100 " style="padding-top: 50px;">
+			<br>
+			<div v-if="loading" id="fill_loading" class="d-flex flex-column justify-content-center align-items-center">
+				Loading...<br>
+				正在取得景點資料
+				<br><br>
+				<div class="balls">
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+			<div style="color: #777;">
+				<div class="form-inline my-2 my-lg-0 w-100 input-group">
+					<input v-model="filterText" class="form-control" type="search" placeholder="搜尋景點名稱、區或地址">
+				</div>
+				<br>
+				顯示 {{filteredAttractions.length}} 筆結果
+				<br>
+				<hr>
+			</div>
+			<div class="row">
+				<template v-for="item in displayedAttractions">
+					<div class="col-12 col-lg-6 col-sm-12 col-md-6">
+						<div class="card mb-4" style="min-height: 300px;">
+							<img v-if="item.images && item.images.length > 0" :src="item.images[0]" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Attraction image">
+							<div class="card-body">
+								<span class="badge badge-secondary mb-2">{{item.source}}</span>
+								<h5 class="card-title text-primary">{{item.name}}</h5>
+								<h6 class="card-subtitle mb-2 text-muted">{{item.district}} | {{item.category.join(', ')}}</h6>
+								<p class="card-text">{{item.summary}}</p>
+								<div class="alert alert-info">
+									<small>
+										<strong>地址:</strong> {{item.address}}<br>
+										<strong>電話:</strong> {{item.tel}}<br>
+										<strong>開放時間:</strong> {{item.open_time}}
+									</small>
+								</div>
+								<div class="collapse" :id="'intro-' + item.id">
+									<div class="card card-body bg-light">
+										{{item.introduction}}
+									</div>
+								</div>
+								<button class="btn btn-sm btn-outline-info" type="button" data-toggle="collapse" :data-target="'#intro-' + item.id">
+									查看詳情
+								</button>
+								<a :href="'https://www.google.com/maps/search/?api=1&query=' + item.lat + ',' + item.lng" target="_blank" class="btn btn-sm btn-outline-success">地圖查看</a>
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
+			<center v-if="filteredAttractions.length > pageSize">
+				<div v-if="currentPage > 1" class="btn btn-success" @click="currentPage--">上一頁</div>
+				<div v-if="currentPage * pageSize < filteredAttractions.length" class="btn btn-success" @click="currentPage++">下一頁</div>
+				<br>
+				頁次: {{currentPage}} / {{Math.ceil(filteredAttractions.length / pageSize)}}
+			</center>
+			<br>
+		</div>
+		<script src="../Script/attractions/app.js"></script>
+	</body>
+</html>
